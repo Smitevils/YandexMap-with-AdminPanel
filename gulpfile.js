@@ -11,7 +11,8 @@ var gulp = require('gulp'),
     rigger = require('gulp-rigger'),
     notify = require("gulp-notify"),
     browserSync = require('browser-sync'),
-    reload = browserSync.reload;
+    reload = browserSync.reload,
+    uglify = require('gulp-uglify');
 
 var path = {
   build: {
@@ -26,7 +27,7 @@ var path = {
   },
   watch: {
     html: './dev/html/**/*.html',
-    js: './dev/js/*.js',
+    js: './dev/js/**/*.js',
     style: './dev/sass/**/*.scss'
   }
 };
@@ -80,6 +81,16 @@ gulp.task('notify', function () {
 gulp.task('watch', function(cb){
     gulp.watch(path.watch.style, ['sass']);
     gulp.watch(path.watch.html, ['html']);
+    gulp.watch(path.watch.js, ['compress']);
+});
+
+//compress
+gulp.task('compress', function() {
+  return gulp.src(path.src.js)
+    .pipe(gulp.dest(path.build.js)) // put uncompress version
+    .pipe(uglify())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest(path.build.js)); // put compress version
 });
 
 gulp.task('default', ['sass', 'html', 'webserver', 'watch']);
