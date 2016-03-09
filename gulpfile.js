@@ -1,6 +1,7 @@
 'use strict';
 
 var gulp = require('gulp'),
+    watch = require('gulp-watch'),
     sass = require('gulp-sass'),
     px2rem = require('gulp-px2rem'),
     px2remOptions = {replace: false},
@@ -12,23 +13,29 @@ var gulp = require('gulp'),
     notify = require("gulp-notify"),
     browserSync = require('browser-sync'),
     reload = browserSync.reload,
-    uglify = require('gulp-uglify');
+    uglify = require('gulp-uglify'),
+    imagemin = require('gulp-imagemin'),
+    pngquant = require('imagemin-pngquant'),
+    del = require('del');
 
 var path = {
   build: {
     html: './dist',
     js: './dist/assets/js',
-    style: './dist/assets/css'
+    style: './dist/assets/css',
+    img: './dist/assets/img'
   },
   src: {
     html: './dev/html/*.html',
     js: './dev/js/*.js',
-    style: './dev/sass/*.scss'
+    style: './dev/sass/*.scss',
+    img: './dev/img/**/*'
   },
   watch: {
     html: './dev/html/**/*.html',
     js: './dev/js/**/*.js',
-    style: './dev/sass/**/*.scss'
+    style: './dev/sass/**/*.scss',
+    img: './dev/img/**/*'
   }
 };
 
@@ -36,6 +43,21 @@ gulp.task('rem', function() {
     gulp.src('./dist/assets/css/**/*.css')
         .pipe(px2rem(px2remOptions, postCssOptions))
         .pipe(gulp.dest('css'));
+});
+
+gulp.task('img:build', function() {
+    // delete old files
+    del([path.build.img] + '/**').then(paths => {
+    	//console.log('Deleted files and folders:\n', paths.join('\n'));
+    });
+    //
+	return gulp.src(path.src.img)
+	.pipe(imagemin({
+		progressive: true,
+		svgoPlugins: [{removeViewBox: false}],
+		use: [pngquant()]
+	}))
+	.pipe(gulp.dest(path.build.img));
 });
 
 // Browser Sync
@@ -82,6 +104,37 @@ gulp.task('watch', function(cb){
     gulp.watch(path.watch.style, ['sass']);
     gulp.watch(path.watch.html, ['html']);
     gulp.watch(path.watch.js, ['compress']);
+    gulp.watch(path.watch.img, ['img:build']);
+});
+
+// custom watch
+// gulp.task('stream', function () {
+//     return gulp.src('css/**/*.css')
+//     .pipe(watch('css/**/*.css'))
+//     .pipe(gulp.dest('build'));
+// });
+gulp.task('stream', function(){
+  watch([path.watch.html], function(event, cb) {
+    gulp.start('html');
+  });
+      watch([path.watch.img], function(event, cb) {
+    gulp.start('img:build');
+  });
+  // watch([path.watch.icons], function(event, cb) {
+  //   gulp.start('icons:build');
+  // });
+  // watch([path.watch.fonts], function(event, cb) {
+  //   gulp.start('fonts:build');
+  // });
+  watch([path.watch.style], function(event, cb) {
+    gulp.start('sass');
+  });
+  watch([path.watch.js], function(event, cb) {
+    gulp.start('compress');
+  });
+  //   watch([path.watch.docs], function(event, cb) {
+  //   gulp.start('docs:build');
+  // });
 });
 
 //compress
@@ -90,7 +143,8 @@ gulp.task('compress', function() {
     .pipe(gulp.dest(path.build.js)) // put uncompress version
     .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(path.build.js)); // put compress version
+    .pipe(gulp.dest(path.build.js)) // put compress version
+    .pipe(reload({stream: true}));
 });
 
-gulp.task('default', ['sass', 'html', 'webserver', 'watch']);
+gulp.task('default', ['sass', 'html', 'webserver', 'stream']);
