@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Yandex Map with Admin Panel - Admin Panel</title>
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <!-- My styles -->
+    <link rel="stylesheet" href="assets/css/main.min.css">
+</head>
+<body>
+    <div class="results"></div>
+    <div class="results2"></div>
+    <h1>Редактирование гродов</h1>
+    <label for="">Удалить город с id</label>
+    <div class="select-delite-city">
+        <select>
+            <option value="">Москва</option>
+        </select>
+    </div>
+    <button class="delite-city">Удалить</button>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $.ajax({
+            url: 'map.php?action=sample1',
+            success: function(data) {
+                $('.results').html(data);
+            }
+        });
+        $.ajax({
+            url: 'map.php?action=sample2',
+            success: function(data) {
+                $('.results2').html(data);
+            }
+        });
+        $.ajax({
+            url: 'map.php?action=sample3',
+            success: function(data) {
+                $('.select-delite-city').html(data);
+            }
+        });
+        $(document).on('click', '.delite-city', function(event) {
+            event.preventDefault();
+            var currentSelectDeliteCity = $('.select-delite-city select :selected').attr('value');
+            //alert(currentSelectDeliteCity)
+            $.ajax({
+                url: 'map.php?action=sample4&currentSelectDeliteCity='+currentSelectDeliteCity+'',
+                success: function(data) {
+                    $('.select-delite-city').html(data);
+                    setTimeout(window.location.reload(), 5000)
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

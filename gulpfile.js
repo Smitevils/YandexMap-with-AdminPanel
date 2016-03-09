@@ -147,4 +147,5 @@ gulp.task('compress', function() {
     .pipe(reload({stream: true}));
 });
 
+//gulp.task('default', ['sass', 'html', 'webserver', 'stream']);
 gulp.task('default', ['sass', 'html', 'webserver', 'stream']);

@@ -133,3 +133,15 @@
         font-weight: 600;
     }
 }
+
+.ymwap__table {
+    border: 1px solid #999;
+    //
+    tr {
+        td {
+            border: 1px solid #999;
+            padding: 10px;
+            text-align: center;
+        }
+    }
+}

@@ -126,3 +126,10 @@
     text-decoration: underline; }
   .ymwap__cities-list__item.selected {
     font-weight: 600; }
+
+.ymwap__table {
+  border: 1px solid #999; }
+  .ymwap__table tr td {
+    border: 1px solid #999;
+    padding: 10px;
+    text-align: center; }
