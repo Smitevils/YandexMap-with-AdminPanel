@@ -113,6 +113,10 @@ switch ($_REQUEST['action']) {
         $currentSelectDeliteCity = $_REQUEST['currentSelectDeliteCity'];
         //echo $currentSelectDeliteCity;
         mysql_query(" DELETE FROM `cities` WHERE `id`= $currentSelectDeliteCity ");
+        break;
+    case 'sample5':
+        //echo "aefsdggsd";
+        mysql_query("INSERT INTO `cities` (`city`, `cordinatesx`, `cordinatesy`, `zoom`) VALUES ('".$_REQUEST['nameCity']."','".$_REQUEST['x']."','".$_REQUEST['y']."','".$_REQUEST['zoom']."')");
 }
 
 ?>

@@ -19,6 +19,16 @@
         </select>
     </div>
     <button class="delite-city">Удалить</button>
+    <!--  -->
+    <h1>Добавление города</h1>
+    <div class="add-city-container">
+        <input type="text" name="name-of-city" placeholder="Название города"><br>
+        <input type="text" name="x" placeholder="x"><br>
+        <input type="text" name="y" placeholder="y"><br>
+        <input type="text" name="zoom" placeholder="zoom"><br>
+        <button class="add-city">Добавить город</button>
+    </div>
+    <!--  -->
     <script type="text/javascript">
     $(document).ready(function() {
         $.ajax({
@@ -46,7 +56,21 @@
             $.ajax({
                 url: 'map.php?action=sample4&currentSelectDeliteCity='+currentSelectDeliteCity+'',
                 success: function(data) {
-                    $('.select-delite-city').html(data);
+                    //$('.select-delite-city').html(data);
+                    setTimeout(window.location.reload(), 5000)
+                }
+            });
+        });
+        $(document).on('click', '.add-city', function(event) {
+            event.preventDefault();
+            var name = $('.add-city-container input[name="name-of-city"]').val();
+            var x = $('.add-city-container input[name="x"]').val();
+            var y = $('.add-city-container input[name="y"]').val();
+            var zoom = $('.add-city-container input[name="zoom"]').val();
+            $.ajax({
+                url: 'map.php?action=sample5&nameCity='+name+'&x='+x+'&y='+y+'&zoom='+zoom+'',
+                success: function(data) {
+                    //$('.select-delite-city').html(data);
                     setTimeout(window.location.reload(), 5000)
                 }
             });
