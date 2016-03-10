@@ -6,8 +6,8 @@ var myMap, // карта
     currentCity; // переменная для хранения
 var cityPoint;
 
-var cityes = ['Москва','Волгоград', 'Санкт-Петербург']; // массив городов
-var cityNumber = ['0', '1', '2']; // массив с номерами городов
+//var cityes = ['Москва','Волгоград', 'Санкт-Петербург']; // массив городов
+//var cityNumber = ['0', '1', '2']; // массив с номерами городов
 
 
 $.ajax({
@@ -57,6 +57,8 @@ var moscow = {
     ]
 }
 
+console.log(JSON.stringify(moscow));
+
 var volgograd = {
     idMap: 2,
     cordinates: {
@@ -103,11 +105,16 @@ var spb = {
 
 var cities = [moscow, volgograd, spb] // массив с обьектами городов
 
-function parseCityJSON() {
-    cityJSON = JSON.stringify( cities[targetCity] );//берем выбранный город и превращаем в строку JSON
-    currentCity = JSON.parse(cityJSON); // возвращеем JSON в обьект
-}
-parseCityJSON();
+// function parseCityJSON() {
+//     // for (var i = 0; i < cityes.length; i++) {
+//     //     if (targetCity == cityNumber[i]) {
+//     //         targetCity = i;
+//     //     }
+//     // }
+//     cityJSON = JSON.stringify( cities[targetCity] );//берем выбранный город и превращаем в строку JSON
+//     currentCity = JSON.parse(cityJSON); // возвращеем JSON в обьект
+// }
+// parseCityJSON();
 
 
 
@@ -119,19 +126,23 @@ function init(){ // функция инициализации карты
 
     var myGeoObjects = []; // создаем переменную дя геообьектов
 
-    for (var i = 0; i < currentCity.markets.length; i++) { //пробегаемся по массиву маркеров
-        myGeoObjects[i] = new ymaps.GeoObject({ // добавляем в геобьекты маркеры
-            geometry: {
-              type: "Point",
-              coordinates: [currentCity.markets[i].posX, currentCity.markets[i].posY] // берем данные из массива с порядковым номером
-          },
-          properties: {
-              clusterCaption: currentCity.markets[i].hintContent, // берем данные из массива с порядковым номером
-              balloonContentHeader: currentCity.markets[i].marketName, // берем данные из массива с порядковым номером
-              balloonContentBody: currentCity.markets[i].marketText, // берем данные из массива с порядковым номером
-              balloonContentFooter: currentCity.markets[i].marketLink // берем данные из массива с порядковым номером
-          }
-        });
+    if (currentCity.markets) {
+        for (var i = 0; i < currentCity.markets.length; i++) { //пробегаемся по массиву маркеров
+            myGeoObjects[i] = new ymaps.GeoObject({ // добавляем в геобьекты маркеры
+                geometry: {
+                  type: "Point",
+                  coordinates: [currentCity.markets[i].posX, currentCity.markets[i].posY] // берем данные из массива с порядковым номером
+              },
+              properties: {
+                  clusterCaption: currentCity.markets[i].hintContent, // берем данные из массива с порядковым номером
+                  balloonContentHeader: currentCity.markets[i].marketName, // берем данные из массива с порядковым номером
+                  balloonContentBody: currentCity.markets[i].marketText, // берем данные из массива с порядковым номером
+                  balloonContentFooter: currentCity.markets[i].marketLink // берем данные из массива с порядковым номером
+              }
+            });
+        }
+    } else {
+        console.log("Маркеров на карте нет!");
     }
 
     var myClusterer = new ymaps.Clusterer(); // создаем кластер
@@ -165,8 +176,9 @@ function provisionalInit(){ // проверяем куки или узнаем �
                    myMap.destroy(); // уничтожаем ранне созданную предварительную карту
                    break;
                } else {
-                   targetCity = 0;
-                   $('.ymwap__popup__title span').html(cityes[targetCity]); // подставляем имя города
+                   //targetCity = $('.ymwap__popup__title span b').data('city');
+                   //$('.ymwap__popup__title span').html(cityes[targetCity]); // подставляем имя города
+                   $('.ymwap__popup__title span').html("<b data-city='"+cityNumber[0]+"'>"+cityes[targetCity]+"</b>");
                }
            }
         });
@@ -177,12 +189,28 @@ ymaps.ready(provisionalInit);
 var openMap = function(){
     $('.ymwap__map-question').hide();
     $('.ymwap__map-title').addClass('init');
-    parseCityJSON(); //создаем из строки обьект с данными города
-    init(); // запускаем карту
+    //parseCityJSON(); //создаем из строки обьект с данными города
+
+    $.ajax({
+        url: 'map.php?action=currentCity&targetCity='+targetCity+'',
+        success: function(data) {
+            //currentCity = JSON.parse(data);
+            //currentCity = data;
+            // cityNumber = JSON.parse(cityNumber);
+            // console.log(cityNumber);
+            //console.log(data);
+            currentCity = JSON.parse(data); // возвращеем JSON в обьект
+            console.log(currentCity);
+            init();
+        }
+    });
+
+    //init(); // запускаем карту
 }
 
 $(document).on('click', '#ymwap__yes', function(event) {
     event.preventDefault();
+    targetCity = $('.ymwap__popup__title span b').data('city');
     openMap();
     $.cookie('geoData', targetCity);
 });
@@ -204,7 +232,7 @@ $(document).on('click', '.ymwap__cities-list__item', function(event) {
 $(document).on('click', '#ymwap__choise-city', function(event) {
     event.preventDefault();
     if ($('.ymwap__cities-list__item').hasClass('selected')) {
-        targetCity = $('.ymwap__cities-list__item.selected').data('number')
+        targetCity = $('.ymwap__cities-list__item.selected').data('number');
         openMap();
         $.cookie('geoData', targetCity);
     } else {
