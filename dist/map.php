@@ -246,7 +246,7 @@ switch ($_REQUEST['action']) {
                 $targetCityPoints = trim($targetCityPoints);
                 //echo $targetCityPoints;
             }
-            $query = "SELECT * FROM `markets` WHERE `city` = 'Москва'"; /*$targetCityPoints*/
+            $query = "SELECT * FROM `markets` WHERE `city` = '$targetCityPoints'"; /*$targetCityPoints*/
             $res = mysql_query($query)  /*|| die(mysql_error())*/;
             while($row = mysql_fetch_array($res))
             {
