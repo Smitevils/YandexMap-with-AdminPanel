@@ -126,7 +126,17 @@ function init(){ // функция инициализации карты
 
     var myGeoObjects = []; // создаем переменную дя геообьектов
 
+    function countOfOject(obj) {
+        var t = typeof(obj);
+        var i=0;
+        if (t!="object" || obj==null) return 0;
+        for (x in obj) i++;
+        return i;
+    }
+    //alert("Count="+countOfOject(currentCity.markets));
+
     if (currentCity.markets) {
+        //alert(currentCity.markets.length)
         for (var i = 0; i < currentCity.markets.length; i++) { //пробегаемся по массиву маркеров
             myGeoObjects[i] = new ymaps.GeoObject({ // добавляем в геобьекты маркеры
                 geometry: {

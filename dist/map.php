@@ -214,6 +214,7 @@ switch ($_REQUEST['action']) {
             public $idMap = 'a default value';
             public $cordinates = 'a default value';
             public $zoom = 'a default value';
+            public $markets = 'a default value';
         }
         /* класс координат карты */
         class mapCordinates
@@ -221,6 +222,25 @@ switch ($_REQUEST['action']) {
             public $x = 'a default value';
             public $y = 'a default value';
         }
+        /* класс маркеров */
+        class marketPoints
+        {
+            public $posX = '55.79';
+            public $posY = '37.64';
+            public $marketName = 'marketName';
+            public $marketText = 'marketText';
+            public $marketLink = 'marketLink';
+        }
+        // объект класса маркеров
+        $marketPointsMap = new marketPoints;
+        // массив для хранения обьектов маркеров
+        $marketPointsMapArray = array();
+        // получаем имя города по которому будем отбирать маркеры
+        //$_REQUEST['nameCity']
+
+        array_push($marketPointsMapArray, $marketPointsMap);
+
+
         $coordinatesMap = new mapCordinates;
         $targetCity = $_REQUEST['targetCity'];
         $coordinatesMapCity = mysql_query("SELECT * FROM `cities` WHERE `id`= $targetCity");
@@ -230,6 +250,7 @@ switch ($_REQUEST['action']) {
         $objectMap = new map;
         $objectMap->idMap = $_REQUEST['targetCity'];
         $objectMap->cordinates = $coordinatesMap;
+        $objectMap->markets = $marketPointsMapArray;
 
         while($row = mysql_fetch_array($coordinatesMapCity))
         {
