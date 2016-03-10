@@ -236,10 +236,30 @@ switch ($_REQUEST['action']) {
         // массив для хранения обьектов маркеров
         $marketPointsMapArray = array();
         // получаем имя города по которому будем отбирать маркеры
-        //$_REQUEST['nameCity']
-
-        array_push($marketPointsMapArray, $marketPointsMap);
-
+        $findNameTargetCity = $_REQUEST['targetCity'];
+        $query = "SELECT * FROM `cities` WHERE `id` = $findNameTargetCity";
+        $res = mysql_query($query);
+        //array_push($marketPointsMapArray, $marketPointsMap);
+            while($row = mysql_fetch_array($res))
+            {
+                $targetCityPoints = $row['city'];
+                $targetCityPoints = trim($targetCityPoints);
+                //echo $targetCityPoints;
+            }
+            $query = "SELECT * FROM `markets` WHERE `city` = 'Москва'"; /*$targetCityPoints*/
+            $res = mysql_query($query)  /*|| die(mysql_error())*/;
+            while($row = mysql_fetch_array($res))
+            {
+                $marketPointsMap = new marketPoints;
+                $marketPointsMap->posX = $row['cordinatesx'];
+                $marketPointsMap->posY = $row['cordinatesy'];
+                $marketPointsMap->marketName = $row['name'];
+                $marketPointsMap->marketText = $row['text'];
+                $marketPointsMap->marketLink = $row['link'];
+                array_push($marketPointsMapArray, $marketPointsMap);
+            }
+        //array_push($marketPointsMapArray, $marketPointsMap);
+        //array_push($marketPointsMapArray, $row['city']);
 
         $coordinatesMap = new mapCordinates;
         $targetCity = $_REQUEST['targetCity'];

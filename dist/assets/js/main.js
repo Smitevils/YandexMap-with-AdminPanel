@@ -204,11 +204,6 @@ var openMap = function(){
     $.ajax({
         url: 'map.php?action=currentCity&targetCity='+targetCity+'',
         success: function(data) {
-            //currentCity = JSON.parse(data);
-            //currentCity = data;
-            // cityNumber = JSON.parse(cityNumber);
-            // console.log(cityNumber);
-            //console.log(data);
             currentCity = JSON.parse(data); // возвращеем JSON в обьект
             console.log(currentCity);
             init();
