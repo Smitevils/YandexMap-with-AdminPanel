@@ -52,6 +52,15 @@ $res2 = mysql_query($query2);
 $query3 = "SELECT id FROM `cities`";
 $res3 = mysql_query($query3);
 
+$query4 = "SELECT id FROM `markets`";
+$res4 = mysql_query($query4);
+
+$query5 = "SELECT city FROM `cities`";
+$res5 = mysql_query($query5);
+
+$query6 = "SELECT * FROM `cities`";
+$res6 = mysql_query($query6);
+
 switch ($_REQUEST['action']) {
     case 'sample1':
         echo "<h1>Таблица городов</h1>";
@@ -117,6 +126,41 @@ switch ($_REQUEST['action']) {
     case 'sample5':
         //echo "aefsdggsd";
         mysql_query("INSERT INTO `cities` (`city`, `cordinatesx`, `cordinatesy`, `zoom`) VALUES ('".$_REQUEST['nameCity']."','".$_REQUEST['x']."','".$_REQUEST['y']."','".$_REQUEST['zoom']."')");
+        break;
+    case 'sample6':
+        echo "<select>";
+        while($row = mysql_fetch_array($res4))
+            {
+                echo "<option value='".$row['id']."'>".$row['id']."</option>";
+            }
+        echo "</select>";
+        break;
+    case 'sample7':
+        $currentSelectDeliteMarket = $_REQUEST['currentSelectDeliteMarket'];
+        mysql_query(" DELETE FROM `markets` WHERE `id`= $currentSelectDeliteMarket ");
+        break;
+    case 'sample8':
+        mysql_query("INSERT INTO `markets` (`city`, `name`, `text`, `link`, `cordinatesx`, `cordinatesy`) VALUES ('".$_REQUEST['city']."','".$_REQUEST['market']."','".$_REQUEST['text']."','".$_REQUEST['link']."','".$_REQUEST['x']."','".$_REQUEST['y']."')");
+        break;
+    case 'citieslist':
+        $array = array();
+        while($row = mysql_fetch_array($res5))
+            {
+                array_push($array, $row['city']);
+            }
+        echo json_encode($array);
+        break;
+    case 'citiesNumberlist':
+        $array = array();
+        while($row = mysql_fetch_array($res6))
+            {
+                array_push($array, $row['id']);
+            }
+        echo json_encode($array);
 }
+
+// формируем json строку со списком городов
+
+
 
 ?>

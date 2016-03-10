@@ -29,6 +29,28 @@
         <button class="add-city">Добавить город</button>
     </div>
     <!--  -->
+    <!--  -->
+    <!--  -->
+    <h1>Удаление точки</h1>
+    <label for="">Удалить точку с id</label>
+    <div class="select-delite-market">
+        <select>
+            <option value="">Точка</option>
+        </select>
+    </div>
+    <button class="delite-market">Удалить</button>
+    <!--  -->
+    <h1>Добавление точки</h1>
+    <div class="add-market-container">
+        <input type="text" name="name-of-city" placeholder="Город Магазина"><br>
+        <input type="text" name="name-of-market" placeholder="Название магазина"><br>
+        <input type="text" name="text" placeholder="Текст"><br>
+        <input type="text" name="link" placeholder="Ссылка"><br>
+        <input type="text" name="x" placeholder="x"><br>
+        <input type="text" name="y" placeholder="y"><br>
+        <button class="add-market">Добавить точку</button>
+    </div>
+    <!--  -->
     <script type="text/javascript">
     $(document).ready(function() {
         $.ajax({
@@ -71,6 +93,40 @@
                 url: 'map.php?action=sample5&nameCity='+name+'&x='+x+'&y='+y+'&zoom='+zoom+'',
                 success: function(data) {
                     //$('.select-delite-city').html(data);
+                    setTimeout(window.location.reload(), 5000)
+                }
+            });
+        });
+        $.ajax({
+            url: 'map.php?action=sample6',
+            success: function(data) {
+                $('.select-delite-market').html(data);
+            }
+        });
+        $(document).on('click', '.delite-market', function(event) {
+            event.preventDefault();
+            var currentSelectDeliteMarket = $('.select-delite-market select :selected').attr('value');
+            $.ajax({
+                url: 'map.php?action=sample7&currentSelectDeliteMarket='+currentSelectDeliteMarket+'',
+                success: function(data) {
+                    //$('.select-delite-market').html(data);
+                    setTimeout(window.location.reload(), 5000)
+                }
+            });
+        });
+        $(document).on('click', '.add-market', function(event) {
+            event.preventDefault();
+            var city = $('.add-market-container input[name="name-of-city"]').val();
+            var market = $('.add-market-container input[name="name-of-market"]').val();
+            var text = $('.add-market-container input[name="text"]').val();
+            var link = $('.add-market-container input[name="link"]').val();
+            var x = $('.add-market-container input[name="x"]').val();
+            var y = $('.add-market-container input[name="y"]').val();
+            //alert(city + market + text + link + x + y)
+            $.ajax({
+                url: 'map.php?action=sample8&city='+city+'&market='+market+'&text='+text+'&link='+link+'&x='+x+'&y='+y+'',
+                success: function(data) {
+                    //$('body').html(data);
                     setTimeout(window.location.reload(), 5000)
                 }
             });

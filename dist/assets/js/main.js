@@ -9,6 +9,26 @@ var cityPoint;
 var cityes = ['Москва','Волгоград', 'Санкт-Петербург']; // массив городов
 var cityNumber = ['0', '1', '2']; // массив с номерами городов
 
+
+$.ajax({
+    url: 'map.php?action=citieslist',
+    success: function(data) {
+        cityes = data;
+        //cityes = cityes.split(',')  // массив ["a", "b", "c"]
+        //cityes = parseJSON(cityes);
+        cityes = JSON.parse(cityes);
+        console.log(cityes);
+    }
+});
+$.ajax({
+    url: 'map.php?action=citiesNumberlist',
+    success: function(data) {
+        cityNumber = data;
+        cityNumber = JSON.parse(cityNumber);
+        console.log(cityNumber);
+    }
+});
+
 var targetCity = 0; // переменная выбранного города
 
 // обекты городов //
@@ -141,7 +161,7 @@ function provisionalInit(){ // проверяем куки или узнаем �
            for (var i = 0; i < cityes.length; i++) {
                if (cityes[i] == cityPoint) { // если имя города совпадает с одним из существующих
                    targetCity = i; // присвоить выбранный город
-                   $('.ymwap__popup__title span').html(cityes[targetCity]); // подставляем имя города
+                   $('.ymwap__popup__title span').html("<b data-city='"+cityNumber[i]+"'>"+cityes[targetCity]+"</b>"); // подставляем имя города
                    myMap.destroy(); // уничтожаем ранне созданную предварительную карту
                    break;
                } else {
