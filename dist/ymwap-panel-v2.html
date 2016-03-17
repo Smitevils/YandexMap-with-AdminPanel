@@ -397,7 +397,7 @@
                         var thisEl = $(this);
                         $('.ymwap-admin__table__table-points').append('<tr>\
                             <td></td>\
-                            <td><input type="text"></td>\
+                            <td></td>\
                             <td><input type="text"></td>\
                             <td><input type="text"></td>\
                             <td><input type="text"></td>\
@@ -408,6 +408,14 @@
                             <td><div class="ymwap-admin__table__btn-event"><i class="fa fa-trash ymwap__delite-new"></i></div></td>\
                         </tr>')
                         ////$('.ymwap-admin__table__table-points:last-child').find('td').eq(7).find('input').val().trim();
+                        $.ajax({
+                            url: 'map.php?action=citiesList',
+                            success: function(data) {
+                                //thisEl.parents('tr').find('td').eq(7).html(data);
+                                $('.ymwap-admin__table__table-points tr:last-child').find('td').eq(1).html(data);
+                                console.log(data);
+                            }
+                        });
                         $.ajax({
                             url: 'map.php?action=clientsList',
                             success: function(data) {
@@ -422,7 +430,7 @@
                     }
                     if ($(this).find('i').hasClass('ymwap__add-new') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-points')) {
                         // запоминаем значение инпута
-                        var cityName = $(this).parents('tr').find('td').eq(1).find('input').val().trim();
+                        var cityName = $(this).parents('tr').find('td').eq(1).find('select :selected').val().trim();
                         // запоминаем значение инпута
                         var pointName = $(this).parents('tr').find('td').eq(2).find('input').val().trim();
                         // запоминаем значение инпута

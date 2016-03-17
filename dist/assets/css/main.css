@@ -158,4 +158,9 @@
 
 .ymwap-admin__table__btn-event {
   display: inline-block;
-  cursor: pointer; }
+  cursor: pointer;
+  -webkit-transition: all .3s;
+  transition: all .3s; }
+
+.ymwap-admin__table__btn-event:hover {
+  color: red; }
