@@ -146,6 +146,8 @@
 .ymwap-admin__table {
   -webkit-transition: all 1s;
   transition: all 1s; }
+  .ymwap-admin__table input {
+    max-width: 100px; }
   .ymwap-admin__table tr {
     -webkit-transition: background 1s;
     transition: background 1s; }

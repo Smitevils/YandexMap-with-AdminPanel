@@ -70,6 +70,58 @@
                 </td>
             </tr> -->
         </table>
+        <h2>Точки</h2>
+        <table class="ymwap-admin__table ymwap-admin__table__table-points">
+            <tr>
+                <th>
+                    # Точки
+                </th>
+                <th>
+                    Город
+                </th>
+                <th>
+                    Название
+                </th>
+                <th>
+                    Текст
+                </th>
+                <th>
+                    Ссылка
+                </th>
+                <th>
+                    X
+                </th>
+                <th>
+                    Y
+                </th>
+                <th>
+                    Клиент
+                </th>
+                <th></th>
+                <th>
+                    <div class="ymwap-admin__table__btn-event">
+                        <i class="fa fa-plus ymwap__add"></i>
+                    </div>
+                </th>
+            </tr>
+        </table>
+        <h2>Клиенты</h2>
+        <table class="ymwap-admin__table ymwap-admin__table__table-clients">
+            <tr>
+                <th>
+                    # Клиента
+                </th>
+                <th>
+                    Наименование
+                </th>
+                <th></th>
+                <th>
+                    <div class="ymwap-admin__table__btn-event">
+                        <i class="fa fa-plus ymwap__add"></i>
+                    </div>
+                </th>
+            </tr>
+        </table>
     </div>
     <script>
         /* admin panel v2 */
@@ -85,9 +137,29 @@
                     });
                 }
                 initTableCities();
+                function initTablePoints() {
+                    $.ajax({
+                        url: 'map.php?action=buildPointsTable',
+                        success: function(data) {
+                            //alert(data)
+                            $('.ymwap-admin__table__table-points').append(data);
+                        }
+                    });
+                }
+                initTablePoints();
+                function initTableClients() {
+                    $.ajax({
+                        url: 'map.php?action=buildClientsTable',
+                        success: function(data) {
+                            //alert(data)
+                            $('.ymwap-admin__table__table-clients').append(data);
+                        }
+                    });
+                }
+                initTableClients();
                 //
                 $(document).on('click', '.ymwap-admin__table__btn-event', function(event) {
-                    if ($(this).find('i').hasClass('ymwap__edit')) { // если кнопка = редактировать
+                    if ($(this).find('i').hasClass('ymwap__edit') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-cities')) { // если кнопка = редактировать
                         // меняем цвет строки
                         $(this).parents('tr').css('background', '#d5d5d5');
                         // меняем кнопку = сохранить
@@ -116,7 +188,7 @@
                         // заканчиваем функцию
                         return;
                     }
-                    if ($(this).find('i').hasClass('ymwap__save')) { // если кнопка = сохранить
+                    if ($(this).find('i').hasClass('ymwap__save') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-cities')) { // если кнопка = сохранить
                         // меняем цвет строки
                         $(this).parents('tr').css('background', '#fff');
                         // меняем кнопку = редактировать
@@ -145,7 +217,7 @@
                         // заканчиваем функцию
                         return;
                     }
-                    if ($(this).find('i').hasClass('ymwap__delite')) { // если кнопка = удалить
+                    if ($(this).find('i').hasClass('ymwap__delite') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-cities')) { // если кнопка = удалить
                         // запоминаем id города
                         var cityID = $(this).parents('tr').find('td').eq(0).html().trim();
                         // удаляем строку
@@ -160,24 +232,25 @@
                         // заканчиваем функцию
                         return;
                     }
-                    if ($(this).find('i').hasClass('ymwap__add')) { // если кнопка = добавить
+                    if ($(this).find('i').hasClass('ymwap__add') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-cities')) { // если кнопка = добавить
                         $('.ymwap-admin__table__table-cities').append('<tr>\
                             <td></td>\
                             <td><input type="text"></td>\
                             <td><input type="text"></td>\
                             <td><input type="text"></td>\
-                        <td><select>');
-                        for (var i = 1; i < 19; i++) {
-                            $('.ymwap-admin__table__table-cities').append('<option>'+i+'</option>');
-                        }
-                        $('.ymwap-admin__table__table-cities').append('</select></td>\
+                        <td><select>\
+                        <option>5</option>\
+                        <option>10</option>\
+                        <option>15</option>\
+                        </select></td>\
                             <td><div class="ymwap-admin__table__btn-event"><i class="fa fa-floppy-o ymwap__add-new"></i></div></td>\
                             <td><div class="ymwap-admin__table__btn-event"><i class="fa fa-trash ymwap__delite-new"></i></div></td>\
                         </tr>')
+                        $('.ymwap-admin__table__table-cities tr:last-child').css('background', 'yellowgreen');
                         // заканчиваем функцию
                         return;
                     }
-                    if ($(this).find('i').hasClass('ymwap__add-new')) {
+                    if ($(this).find('i').hasClass('ymwap__add-new') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-cities')) {
                         // запоминаем значение инпута
                         var cityName = $(this).parents('tr').find('td').eq(1).find('input').val().trim();
                         // запоминаем значение инпута
@@ -185,7 +258,7 @@
                         // запоминаем значение инпута
                         var y = $(this).parents('tr').find('td').eq(3).find('input').val().trim();
                         // запоминаем значение инпута
-                        var zoom = $(this).parents('tr').find('td').eq(4).find('input').val().trim();
+                        var zoom = $(this).parents('tr').find('td').eq(4).find('select :selected').val().trim();
                         // скрипт php
                         $.ajax({
                             url: 'map.php?action=addCity&cityName='+cityName+'&x='+x+'&y='+y+'&zoom='+zoom,
@@ -199,9 +272,239 @@
                         // заканчиваем функцию
                         return;
                     }
-                    if ($(this).find('i').hasClass('ymwap__delite-new')) {
+                    if ($(this).find('i').hasClass('ymwap__delite-new') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-cities')) {
                         // удаляем строку
                         $(this).parents('tr').remove();
+                        // заканчиваем функцию
+                        return;
+                    }
+                    // кнопки таблицы ТОЧЕК
+                    if ($(this).find('i').hasClass('ymwap__edit') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-points')) { // если кнопка = редактировать
+                        // меняем цвет строки
+                        $(this).parents('tr').css('background', '#d5d5d5');
+                        // меняем кнопку = сохранить
+                        $(this).html('<i class="fa fa-floppy-o ymwap__save"></i>');
+                        // запоминаем поле, вставляем значене в инпут
+                        var cityName = $(this).parents('tr').find('td').eq(1).html().trim();
+                        $(this).parents('tr').find('td').eq(1).html('<input type="text" value="'+cityName+'">');
+                        // запоминаем поле, вставляем значене в инпут
+                        var pointName = $(this).parents('tr').find('td').eq(2).html().trim();
+                        $(this).parents('tr').find('td').eq(2).html('<input type="text" value="'+pointName+'">');
+                        // запоминаем поле, вставляем значене в инпут
+                        var pointText = $(this).parents('tr').find('td').eq(3).html().trim();
+                        $(this).parents('tr').find('td').eq(3).html('<input type="text" value="'+pointText+'">');
+                        // запоминаем поле, вставляем значене в инпут
+                        var pointLink = $(this).parents('tr').find('td').eq(4).html().trim();
+                        $(this).parents('tr').find('td').eq(4).html('<input type="text" value="'+pointLink+'">');
+                        // запоминаем поле, вставляем значене в инпут
+                        var x = $(this).parents('tr').find('td').eq(5).html().trim();
+                        $(this).parents('tr').find('td').eq(5).html('<input type="text" value="'+x+'">');
+                        // запоминаем поле, вставляем значене в инпут
+                        var y = $(this).parents('tr').find('td').eq(6).html().trim();
+                        $(this).parents('tr').find('td').eq(6).html('<input type="text" value="'+y+'">');
+                        // запоминаем поле, вставляем значене в инпут
+                        // var client = $(this).parents('tr').find('td').eq(7).html().trim();
+                        // $(this).parents('tr').find('td').eq(7).html('<input type="text" value="'+client+'">');
+                        // запоминаем поле, вставляем значене в инпут
+                        $(this).parents('tr').find('td').eq(7).html('<select></select>');
+                        for (var i = 1; i < 19; i++) {
+                            if (i == client) {
+                                $(this).parents('tr').find('td').eq(7).find('select').append('<option>'+client+'</option>');
+                                $(this).parents('tr').find('td').eq(7).find('select :nth-child('+client+')').attr("selected", "selected");
+                            } else {
+                                $(this).parents('tr').find('td').eq(7).find('select').append('<option>'+i+'</option>');
+                            }
+                        }
+                        // запоминаем поле, вставляем значене в инпут
+                        var client = $(this).parents('tr').find('td').eq(7).html().trim();
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__save') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-points')) { // если кнопка = сохранить
+                        // меняем цвет строки
+                        $(this).parents('tr').css('background', '#fff');
+                        // меняем кнопку = редактировать
+                        $(this).html('<i class="fa fa-pencil ymwap__edit"></i>');
+                        // запоминаем значение инпута, заменяем контент ячейки на значение
+                        var cityName = $(this).parents('tr').find('td').eq(1).find('input').val().trim();
+                        $(this).parents('tr').find('td').eq(1).html(cityName);
+                        // запоминаем значение инпута, заменяем контент ячейки на значение
+                        var pointName = $(this).parents('tr').find('td').eq(2).find('input').val().trim();
+                        $(this).parents('tr').find('td').eq(2).html(pointName);
+                        // запоминаем значение инпута, заменяем контент ячейки на значение
+                        var pointText = $(this).parents('tr').find('td').eq(3).find('input').val().trim();
+                        $(this).parents('tr').find('td').eq(3).html(pointText);
+                        // запоминаем значение инпута, заменяем контент ячейки на значение
+                        var pointLink = $(this).parents('tr').find('td').eq(4).find('input').val().trim();
+                        $(this).parents('tr').find('td').eq(4).html(pointLink);
+                        // запоминаем значение инпута, заменяем контент ячейки на значение
+                        var x = $(this).parents('tr').find('td').eq(5).find('input').val().trim();
+                        $(this).parents('tr').find('td').eq(5).html(x);
+                        // запоминаем значение инпута, заменяем контент ячейки на значение
+                        var y = $(this).parents('tr').find('td').eq(6).find('input').val().trim();
+                        $(this).parents('tr').find('td').eq(6).html(y);
+                        // запоминаем значение инпута, заменяем контент ячейки на значение
+                        var client = $(this).parents('tr').find('td').eq(7).find('select :selected').val().trim();
+                        $(this).parents('tr').find('td').eq(7).html(client);
+                        // запоминаем id города
+                        var cityID = $(this).parents('tr').find('td').eq(0).html().trim();
+                        // скрипт php
+                        $.ajax({
+                            url: 'map.php?action=changePoints&cityID='+cityID+'&cityName='+cityName+'&pointName='+pointName+'&pointText='+pointText+'&pointLink='+pointLink+'&x='+x+'&y='+y,
+                            success: function(data) {
+                                //$('body').append(data);
+                                console.log(data);
+                            }
+                        });
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__delite') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-points')) { // если кнопка = удалить
+                        // запоминаем id города
+                        var cityID = $(this).parents('tr').find('td').eq(0).html().trim();
+                        // удаляем строку
+                        $(this).parents('tr').remove();
+                        // скрипт php
+                        $.ajax({
+                            url: 'map.php?action=removePoint&cityID='+cityID,
+                            success: function(data) {
+                                //$('.ymwap-admin__table__table-cities').append(data);
+                            }
+                        });
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__add') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-points')) { // если кнопка = добавить
+                        $('.ymwap-admin__table__table-points').append('<tr>\
+                            <td></td>\
+                            <td><input type="text"></td>\
+                            <td><input type="text"></td>\
+                            <td><input type="text"></td>\
+                            <td><input type="text"></td>\
+                            <td><input type="text"></td>\
+                            <td><input type="text"></td>\
+                                <td><select>\
+                                <option>5</option>\
+                                <option>10</option>\
+                                <option>15</option>\
+                                </select></td>\
+                            <td><div class="ymwap-admin__table__btn-event"><i class="fa fa-floppy-o ymwap__add-new"></i></div></td>\
+                            <td><div class="ymwap-admin__table__btn-event"><i class="fa fa-trash ymwap__delite-new"></i></div></td>\
+                        </tr>')
+                        $('.ymwap-admin__table__table-points tr:last-child').css('background', 'yellowgreen');
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__add-new') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-points')) {
+                        // запоминаем значение инпута
+                        var cityName = $(this).parents('tr').find('td').eq(1).find('input').val().trim();
+                        // запоминаем значение инпута
+                        var pointName = $(this).parents('tr').find('td').eq(2).find('input').val().trim();
+                        // запоминаем значение инпута
+                        var pointText = $(this).parents('tr').find('td').eq(3).find('input').val().trim();
+                        // запоминаем значение инпута
+                        var pointLink = $(this).parents('tr').find('td').eq(4).find('input').val().trim();
+                        // запоминаем значение инпута
+                        var x = $(this).parents('tr').find('td').eq(5).find('input').val().trim();
+                        // запоминаем значение инпута
+                        var y = $(this).parents('tr').find('td').eq(6).find('input').val().trim();
+                        // запоминаем значение инпута
+                        var client = $(this).parents('tr').find('td').eq(7).find('select :selected').val().trim();
+                        // скрипт php
+                        $.ajax({
+                            url: 'map.php?action=addPoint&cityID='+cityID+'&cityName='+cityName+'&pointName='+pointName+'&pointText='+pointText+'&pointLink='+pointLink+'&x='+x+'&y='+y,
+                            success: function(data) {
+                                console.log(data);
+                            }
+                        });
+                        //
+                        $('.ymwap-admin__table__table-points').find('tr').not( $( "tr:first-child" ) ).remove();
+                        initTablePoints();
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__delite-new') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-points')) {
+                        // удаляем строку
+                        $(this).parents('tr').remove();
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__add') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-clients')) { // если кнопка = добавить
+                        $('.ymwap-admin__table__table-clients').append('<tr>\
+                            <td></td>\
+                            <td><input type="text"></td>\
+                            <td><div class="ymwap-admin__table__btn-event"><i class="fa fa-floppy-o ymwap__add-new"></i></div></td>\
+                            <td><div class="ymwap-admin__table__btn-event"><i class="fa fa-trash ymwap__delite-new"></i></div></td>\
+                        </tr>')
+                        $('.ymwap-admin__table__table-clients tr:last-child').css('background', 'yellowgreen');
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__add-new') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-clients')) {
+                        // запоминаем значение инпута
+                        var clientName = $(this).parents('tr').find('td').eq(1).find('input').val().trim();
+                        // скрипт php
+                        $.ajax({
+                            url: 'map.php?action=addClient&clientName='+clientName,
+                            success: function(data) {
+                                console.log(data);
+                            }
+                        });
+                        //
+                        $('.ymwap-admin__table__table-clients').find('tr').not( $( "tr:first-child" ) ).remove();
+                        initTableClients();
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__delite-new') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-clients')) {
+                        // удаляем строку
+                        $(this).parents('tr').remove();
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__delite') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-clients')) { // если кнопка = удалить
+                        // запоминаем id города
+                        var clientID = $(this).parents('tr').find('td').eq(0).html().trim();
+                        // удаляем строку
+                        $(this).parents('tr').remove();
+                        // скрипт php
+                        $.ajax({
+                            url: 'map.php?action=removeClient&clientID='+clientID,
+                            success: function(data) {
+                                //$('.ymwap-admin__table__table-cities').append(data);
+                            }
+                        });
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__edit') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-clients')) { // если кнопка = редактировать
+                        // меняем цвет строки
+                        $(this).parents('tr').css('background', '#d5d5d5');
+                        // меняем кнопку = сохранить
+                        $(this).html('<i class="fa fa-floppy-o ymwap__save"></i>');
+                        // запоминаем поле, вставляем значене в инпут
+                        var clientName = $(this).parents('tr').find('td').eq(1).html().trim();
+                        $(this).parents('tr').find('td').eq(1).html('<input type="text" value="'+clientName+'">');
+                        // заканчиваем функцию
+                        return;
+                    }
+                    if ($(this).find('i').hasClass('ymwap__save') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-clients')) { // если кнопка = сохранить
+                        // меняем цвет строки
+                        $(this).parents('tr').css('background', '#fff');
+                        // меняем кнопку = редактировать
+                        $(this).html('<i class="fa fa-pencil ymwap__edit"></i>');
+                        // запоминаем значение инпута, заменяем контент ячейки на значение
+                        var clientName = $(this).parents('tr').find('td').eq(1).find('input').val().trim();
+                        $(this).parents('tr').find('td').eq(1).html(clientName);
+                        // запоминаем id города
+                        var clientID = $(this).parents('tr').find('td').eq(0).html().trim();
+                        // скрипт php
+                        $.ajax({
+                            url: 'map.php?action=changeClient&clientID='+clientID+'&clientName='+clientName,
+                            success: function(data) {
+                                $('body').append(data);
+                            }
+                        });
                         // заканчиваем функцию
                         return;
                     }

@@ -161,6 +161,8 @@
 .ymwap-admin__table {
     transition: all 1s;
     //
+    input {max-width: 100px;}
+    //
     tr {
         transition: background 1s;
         //

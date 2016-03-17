@@ -98,6 +98,12 @@ mysql_query("CREATE TABLE IF NOT EXISTS `markets`(
         PRIMARY KEY(`id`)
     )") or die(mysql_error());
 
+mysql_query("CREATE TABLE IF NOT EXISTS `clients`(
+`id` INT(11) NOT NULL AUTO_INCREMENT,
+        `name` TEXT(1000) NOT NULL,
+        PRIMARY KEY(`id`)
+    )") or die(mysql_error());
+
 $query = "SELECT * FROM `cities`";
 $res = mysql_query($query);
 
@@ -349,6 +355,110 @@ switch ($_REQUEST['action']) {
         mysql_query("INSERT INTO `cities` (`city`, `cordinatesx`, `cordinatesy`, `zoom`) VALUES ('".$_REQUEST['cityName']."', '".$_REQUEST['x']."','".$_REQUEST['y']."','".$_REQUEST['zoom']."')");
         //mysql_query("INSERT INTO `cities` (`city`, `cordinatesx`, `cordinatesy`) VALUES ('".$_REQUEST['cityName']."', '".$_REQUEST['x']."')");
         echo $cityName." ".$x." ".$y." ".$zoom;
+        break;
+    case 'buildPointsTable':
+        $query = "SELECT * FROM `markets` ORDER BY `city`";
+        $res = mysql_query($query);
+            while($row = mysql_fetch_array($res))
+            {
+                echo "<tr>";
+                echo "<td>";
+                echo $row['id'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['city'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['name'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['text'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['link'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['cordinatesx'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['cordinatesy'];
+                echo "</td>";
+                echo "<td>";
+                // client
+                echo "</td>";
+                echo "<td>";
+                    echo "<div class=\"ymwap-admin__table__btn-event\">";
+                        echo "<i class=\"fa fa-pencil ymwap__edit\"></i>";
+                    echo "</div>";
+                echo "</td>";
+                echo "<td>";
+                    echo "<div class=\"ymwap-admin__table__btn-event\">";
+                        echo "<i class=\"fa fa-trash ymwap__delite\"></i>";
+                    echo "</div>";
+                echo "</td>";
+                echo "</tr>";
+            }
+        break;
+    case 'changePoints':
+        //$query = "UPDATE `markets` SET `city`= '".$_REQUEST['cityName']."',`pointName`= '".$_REQUEST['pointName']."',`pointText`= '".$_REQUEST['pointText']."',`pointLink`= '".$_REQUEST['pointLink']."',`cordinatesx`= '".$_REQUEST['x']."',`cordinatesy`= '".$_REQUEST['y']."' WHERE `id`= '".$_REQUEST['cityID']."'";
+        $query = "UPDATE `markets` SET `city`= '".$_REQUEST['cityName']."',`name`= '".$_REQUEST['pointName']."',`text`= '".$_REQUEST['pointText']."',`link`= '".$_REQUEST['pointLink']."',`cordinatesx`= '".$_REQUEST['x']."',`cordinatesy`= '".$_REQUEST['y']."' WHERE `id`= '".$_REQUEST['cityID']."'";
+        $res = mysql_query($query);
+            // while($row = mysql_fetch_array($res8))
+            // {
+            //     echo $cityID;
+            // }
+            echo $_REQUEST['cityName'];
+        break;
+    case 'removePoint':
+        $cityID = $_REQUEST['cityID'];
+        mysql_query(" DELETE FROM `markets` WHERE `id`= $cityID");
+        break;
+    case 'addPoint':
+        mysql_query("INSERT INTO `markets` (`city`, `name`, `text`, `link`, `cordinatesx`, `cordinatesy`) VALUES ('".$_REQUEST['cityName']."', '".$_REQUEST['pointName']."', '".$_REQUEST['pointText']."', '".$_REQUEST['pointLink']."', '".$_REQUEST['x']."','".$_REQUEST['y']."')");
+        //mysql_query("INSERT INTO `markets` (`city`, `name`, `text`, `link`, `cordinatesx`, `cordinatesy`) VALUES ('".$_REQUEST['cityName']."', '".$_REQUEST['pointName']."', '".$_REQUEST['pointText']."', '".$_REQUEST['pointLink']."', '".$_REQUEST['x']."','".$_REQUEST['y']."')");
+        break;
+    case 'buildClientsTable':
+        $query = "SELECT * FROM `clients` ORDER BY `name`";
+        $res = mysql_query($query);
+            while($row = mysql_fetch_array($res))
+            {
+                echo "<tr>";
+                echo "<td>";
+                echo $row['id'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['name'];
+                echo "</td>";
+                echo "<td>";
+                    echo "<div class=\"ymwap-admin__table__btn-event\">";
+                        echo "<i class=\"fa fa-pencil ymwap__edit\"></i>";
+                    echo "</div>";
+                echo "</td>";
+                echo "<td>";
+                    echo "<div class=\"ymwap-admin__table__btn-event\">";
+                        echo "<i class=\"fa fa-trash ymwap__delite\"></i>";
+                    echo "</div>";
+                echo "</td>";
+                echo "</tr>";
+            }
+        break;
+    case 'addClient':
+        mysql_query("INSERT INTO `clients` (`name`) VALUES ('".$_REQUEST['clientName']."')");
+        //mysql_query("INSERT INTO `markets` (`city`, `name`, `text`, `link`, `cordinatesx`, `cordinatesy`) VALUES ('".$_REQUEST['cityName']."', '".$_REQUEST['pointName']."', '".$_REQUEST['pointText']."', '".$_REQUEST['pointLink']."', '".$_REQUEST['x']."','".$_REQUEST['y']."')");
+        break;
+    case 'removeClient':
+        $clientID = $_REQUEST['clientID'];
+        mysql_query(" DELETE FROM `clients` WHERE `id`= $clientID");
+        break;
+    case 'changeClient':
+        //$query = "UPDATE `markets` SET `city`= '".$_REQUEST['cityName']."',`pointName`= '".$_REQUEST['pointName']."',`pointText`= '".$_REQUEST['pointText']."',`pointLink`= '".$_REQUEST['pointLink']."',`cordinatesx`= '".$_REQUEST['x']."',`cordinatesy`= '".$_REQUEST['y']."' WHERE `id`= '".$_REQUEST['cityID']."'";
+        $query = "UPDATE `clients` SET `name`= '".$_REQUEST['clientName']."' WHERE `id`= '".$_REQUEST['clientID']."' ";
+        $res = mysql_query($query);
+            // while($row = mysql_fetch_array($res8))
+            // {
+            //     echo $cityID;
+            // }
+            echo $_REQUEST['clientName'];
         break;
 }
 
