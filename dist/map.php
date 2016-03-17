@@ -54,6 +54,11 @@ $user="root";
 $password="";
 $db="my_db";
 
+// $host="localhost";
+// $user="srv39201_maps";
+// $password="trem45";
+// $db="srv39201_maps";
+
 if(!mysql_connect("$host", "$user", "$password")) {
     exit(mysql_error());
 } else {
@@ -281,7 +286,70 @@ switch ($_REQUEST['action']) {
         //$objectMap->zoom = 22;
         //echo json_encode($objectMap);
         echo json_fix_cyr(json_encode($objectMap)); // ["собака","кошка"]
+        break;
+    case 'buildCitiesTable':
+        $query7 = "SELECT * FROM `cities` ORDER BY `city`";
+        $res7 = mysql_query($query7);
+            while($row = mysql_fetch_array($res7))
+            {
+                echo "<tr>";
+                echo "<td>";
+                echo $row['id'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['city'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['cordinatesx'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['cordinatesy'];
+                echo "</td>";
+                echo "<td>";
+                echo $row['zoom'];
+                echo "</td>";
+                echo "</td>";
+                echo "<td>";
+                    echo "<div class=\"ymwap-admin__table__btn-event\">";
+                        echo "<i class=\"fa fa-pencil ymwap__edit\"></i>";
+                    echo "</div>";
+                echo "</td>";
+                echo "<td>";
+                    echo "<div class=\"ymwap-admin__table__btn-event\">";
+                        echo "<i class=\"fa fa-trash ymwap__delite\"></i>";
+                    echo "</div>";
+                echo "</td>";
+                echo "</tr>";
+            }
+        break;
+    case 'removeCity':
+    $cityID = $_REQUEST['cityID'];
+        $cityID = $_REQUEST['cityID'];
+        mysql_query(" DELETE FROM `cities` WHERE `id`= $cityID");
+        break;
+    case 'changeCity':
+        $cityID = $_REQUEST['cityID'];
+        $cityName = $_REQUEST['cityName'];
+        $x = $_REQUEST['x'];
+        $y = $_REQUEST['y'];
+        $zoom = $_REQUEST['zoom'];
 
+        $query8 = "UPDATE `cities` SET `city`= '".$_REQUEST['cityName']."',`cordinatesx`= '".$_REQUEST['x']."',`cordinatesy`= '".$_REQUEST['y']."',`zoom`= '".$_REQUEST['zoom']."' WHERE `id`= $cityID";
+        $res8 = mysql_query($query8);
+            // while($row = mysql_fetch_array($res8))
+            // {
+            //     echo $cityID;
+            // }
+        break;
+    case 'addCity':
+        $cityName = $_REQUEST['cityName'];
+        $x = $_REQUEST['x'];
+        $y = $_REQUEST['y'];
+        $zoom = $_REQUEST['zoom'];
+        mysql_query("INSERT INTO `cities` (`city`, `cordinatesx`, `cordinatesy`, `zoom`) VALUES ('".$_REQUEST['cityName']."', '".$_REQUEST['x']."','".$_REQUEST['y']."','".$_REQUEST['zoom']."')");
+        //mysql_query("INSERT INTO `cities` (`city`, `cordinatesx`, `cordinatesy`) VALUES ('".$_REQUEST['cityName']."', '".$_REQUEST['x']."')");
+        echo $cityName." ".$x." ".$y." ".$zoom;
+        break;
 }
 
 // формируем json строку со списком городов

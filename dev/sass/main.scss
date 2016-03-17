@@ -145,3 +145,39 @@
         }
     }
 }
+
+/********************/
+
+//*{outline: 1px solid;}
+
+.ymwap-admin {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 400;
+}
+
+.ymwap-admin__container {
+    width: 1280px; margin: 0 auto;
+}
+.ymwap-admin__table {
+    transition: all 1s;
+    //
+    tr {
+        transition: background 1s;
+        //
+        td {
+            //
+        }
+        td {
+            //
+        }
+    }
+}
+.ymwap-admin__table tr th, .ymwap-admin__table tr td {
+    padding: 10px 20px;
+    border: 1px solid #000;
+}
+
+.ymwap-admin__table__btn-event {
+    display: inline-block;
+    cursor: pointer;
+}
