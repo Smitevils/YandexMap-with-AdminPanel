@@ -280,13 +280,23 @@
                     }
                     // кнопки таблицы ТОЧЕК
                     if ($(this).find('i').hasClass('ymwap__edit') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-points')) { // если кнопка = редактировать
+
+                        var thisEl = $(this);
                         // меняем цвет строки
                         $(this).parents('tr').css('background', '#d5d5d5');
                         // меняем кнопку = сохранить
                         $(this).html('<i class="fa fa-floppy-o ymwap__save"></i>');
+
                         // запоминаем поле, вставляем значене в инпут
-                        var cityName = $(this).parents('tr').find('td').eq(1).html().trim();
-                        $(this).parents('tr').find('td').eq(1).html('<input type="text" value="'+cityName+'">');
+                        // var cityName = $(this).parents('tr').find('td').eq(1).html().trim();
+                        // $(this).parents('tr').find('td').eq(1).html('<input type="text" value="'+cityName+'">');
+                        $.ajax({
+                            url: 'map.php?action=citiesList',
+                            success: function(data) {
+                                thisEl.parents('tr').find('td').eq(1).html(data);
+                                console.log(data);
+                            }
+                        });
                         // запоминаем поле, вставляем значене в инпут
                         var pointName = $(this).parents('tr').find('td').eq(2).html().trim();
                         $(this).parents('tr').find('td').eq(2).html('<input type="text" value="'+pointName+'">');
@@ -306,15 +316,23 @@
                         // var client = $(this).parents('tr').find('td').eq(7).html().trim();
                         // $(this).parents('tr').find('td').eq(7).html('<input type="text" value="'+client+'">');
                         // запоминаем поле, вставляем значене в инпут
-                        $(this).parents('tr').find('td').eq(7).html('<select></select>');
-                        for (var i = 1; i < 19; i++) {
-                            if (i == client) {
-                                $(this).parents('tr').find('td').eq(7).find('select').append('<option>'+client+'</option>');
-                                $(this).parents('tr').find('td').eq(7).find('select :nth-child('+client+')').attr("selected", "selected");
-                            } else {
-                                $(this).parents('tr').find('td').eq(7).find('select').append('<option>'+i+'</option>');
+                        //
+                        // $(this).parents('tr').find('td').eq(7).html('<select></select>');
+                        // for (var i = 1; i < 19; i++) {
+                        //     if (i == client) {
+                        //         $(this).parents('tr').find('td').eq(7).find('select').append('<option>'+client+'</option>');
+                        //         $(this).parents('tr').find('td').eq(7).find('select :nth-child('+client+')').attr("selected", "selected");
+                        //     } else {
+                        //         $(this).parents('tr').find('td').eq(7).find('select').append('<option>'+i+'</option>');
+                        //     }
+                        // }
+                        $.ajax({
+                            url: 'map.php?action=clientsList',
+                            success: function(data) {
+                                thisEl.parents('tr').find('td').eq(7).html(data);
+                                console.log(data);
                             }
-                        }
+                        });
                         // запоминаем поле, вставляем значене в инпут
                         var client = $(this).parents('tr').find('td').eq(7).html().trim();
                         // заканчиваем функцию
@@ -326,7 +344,8 @@
                         // меняем кнопку = редактировать
                         $(this).html('<i class="fa fa-pencil ymwap__edit"></i>');
                         // запоминаем значение инпута, заменяем контент ячейки на значение
-                        var cityName = $(this).parents('tr').find('td').eq(1).find('input').val().trim();
+                        //var cityName = $(this).parents('tr').find('td').eq(1).find('input').val().trim();
+                        var cityName = $(this).parents('tr').find('td').eq(1).find('select :selected').val().trim();
                         $(this).parents('tr').find('td').eq(1).html(cityName);
                         // запоминаем значение инпута, заменяем контент ячейки на значение
                         var pointName = $(this).parents('tr').find('td').eq(2).find('input').val().trim();
@@ -350,7 +369,7 @@
                         var cityID = $(this).parents('tr').find('td').eq(0).html().trim();
                         // скрипт php
                         $.ajax({
-                            url: 'map.php?action=changePoints&cityID='+cityID+'&cityName='+cityName+'&pointName='+pointName+'&pointText='+pointText+'&pointLink='+pointLink+'&x='+x+'&y='+y,
+                            url: 'map.php?action=changePoints&cityID='+cityID+'&cityName='+cityName+'&pointName='+pointName+'&pointText='+pointText+'&pointLink='+pointLink+'&x='+x+'&y='+y+'&client='+client,
                             success: function(data) {
                                 //$('body').append(data);
                                 console.log(data);
@@ -375,6 +394,7 @@
                         return;
                     }
                     if ($(this).find('i').hasClass('ymwap__add') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-points')) { // если кнопка = добавить
+                        var thisEl = $(this);
                         $('.ymwap-admin__table__table-points').append('<tr>\
                             <td></td>\
                             <td><input type="text"></td>\
@@ -383,14 +403,19 @@
                             <td><input type="text"></td>\
                             <td><input type="text"></td>\
                             <td><input type="text"></td>\
-                                <td><select>\
-                                <option>5</option>\
-                                <option>10</option>\
-                                <option>15</option>\
-                                </select></td>\
+                            <td></td>\
                             <td><div class="ymwap-admin__table__btn-event"><i class="fa fa-floppy-o ymwap__add-new"></i></div></td>\
                             <td><div class="ymwap-admin__table__btn-event"><i class="fa fa-trash ymwap__delite-new"></i></div></td>\
                         </tr>')
+                        ////$('.ymwap-admin__table__table-points:last-child').find('td').eq(7).find('input').val().trim();
+                        $.ajax({
+                            url: 'map.php?action=clientsList',
+                            success: function(data) {
+                                //thisEl.parents('tr').find('td').eq(7).html(data);
+                                $('.ymwap-admin__table__table-points tr:last-child').find('td').eq(7).html(data);
+                                console.log(data);
+                            }
+                        });
                         $('.ymwap-admin__table__table-points tr:last-child').css('background', 'yellowgreen');
                         // заканчиваем функцию
                         return;
@@ -412,7 +437,7 @@
                         var client = $(this).parents('tr').find('td').eq(7).find('select :selected').val().trim();
                         // скрипт php
                         $.ajax({
-                            url: 'map.php?action=addPoint&cityID='+cityID+'&cityName='+cityName+'&pointName='+pointName+'&pointText='+pointText+'&pointLink='+pointLink+'&x='+x+'&y='+y,
+                            url: 'map.php?action=addPoint&cityID='+cityID+'&cityName='+cityName+'&pointName='+pointName+'&pointText='+pointText+'&pointLink='+pointLink+'&x='+x+'&y='+y+'&client='+client,
                             success: function(data) {
                                 console.log(data);
                             }

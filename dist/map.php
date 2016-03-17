@@ -95,6 +95,7 @@ mysql_query("CREATE TABLE IF NOT EXISTS `markets`(
         `link` TEXT(1000) NOT NULL,
         `cordinatesx` TEXT(1000) NOT NULL,
         `cordinatesy` TEXT(1000) NOT NULL,
+        `client` TEXT(1000) NOT NULL,
         PRIMARY KEY(`id`)
     )") or die(mysql_error());
 
@@ -367,6 +368,15 @@ switch ($_REQUEST['action']) {
                 echo "</td>";
                 echo "<td>";
                 echo $row['city'];
+
+                // echo "<select>";
+                // $query2 = "SELECT `city` FROM `cities` ORDER BY `city`";
+                // $res2 = mysql_query($query2);
+                // while($row2 = mysql_fetch_array($res2)) {
+                //     echo "<option>".$row2['city']."</option>";
+                // }
+                // echo "</select>";
+                //
                 echo "</td>";
                 echo "<td>";
                 echo $row['name'];
@@ -384,7 +394,7 @@ switch ($_REQUEST['action']) {
                 echo $row['cordinatesy'];
                 echo "</td>";
                 echo "<td>";
-                // client
+                echo $row['client'];
                 echo "</td>";
                 echo "<td>";
                     echo "<div class=\"ymwap-admin__table__btn-event\">";
@@ -401,7 +411,7 @@ switch ($_REQUEST['action']) {
         break;
     case 'changePoints':
         //$query = "UPDATE `markets` SET `city`= '".$_REQUEST['cityName']."',`pointName`= '".$_REQUEST['pointName']."',`pointText`= '".$_REQUEST['pointText']."',`pointLink`= '".$_REQUEST['pointLink']."',`cordinatesx`= '".$_REQUEST['x']."',`cordinatesy`= '".$_REQUEST['y']."' WHERE `id`= '".$_REQUEST['cityID']."'";
-        $query = "UPDATE `markets` SET `city`= '".$_REQUEST['cityName']."',`name`= '".$_REQUEST['pointName']."',`text`= '".$_REQUEST['pointText']."',`link`= '".$_REQUEST['pointLink']."',`cordinatesx`= '".$_REQUEST['x']."',`cordinatesy`= '".$_REQUEST['y']."' WHERE `id`= '".$_REQUEST['cityID']."'";
+        $query = "UPDATE `markets` SET `city`= '".$_REQUEST['cityName']."',`name`= '".$_REQUEST['pointName']."',`text`= '".$_REQUEST['pointText']."',`link`= '".$_REQUEST['pointLink']."',`cordinatesx`= '".$_REQUEST['x']."',`cordinatesy`= '".$_REQUEST['y']."',`client`= '".$_REQUEST['client']."' WHERE `id`= '".$_REQUEST['cityID']."'";
         $res = mysql_query($query);
             // while($row = mysql_fetch_array($res8))
             // {
@@ -414,7 +424,7 @@ switch ($_REQUEST['action']) {
         mysql_query(" DELETE FROM `markets` WHERE `id`= $cityID");
         break;
     case 'addPoint':
-        mysql_query("INSERT INTO `markets` (`city`, `name`, `text`, `link`, `cordinatesx`, `cordinatesy`) VALUES ('".$_REQUEST['cityName']."', '".$_REQUEST['pointName']."', '".$_REQUEST['pointText']."', '".$_REQUEST['pointLink']."', '".$_REQUEST['x']."','".$_REQUEST['y']."')");
+        mysql_query("INSERT INTO `markets` (`city`, `name`, `text`, `link`, `cordinatesx`, `cordinatesy`, `client`) VALUES ('".$_REQUEST['cityName']."', '".$_REQUEST['pointName']."', '".$_REQUEST['pointText']."', '".$_REQUEST['pointLink']."', '".$_REQUEST['x']."','".$_REQUEST['y']."','".$_REQUEST['client']."')");
         //mysql_query("INSERT INTO `markets` (`city`, `name`, `text`, `link`, `cordinatesx`, `cordinatesy`) VALUES ('".$_REQUEST['cityName']."', '".$_REQUEST['pointName']."', '".$_REQUEST['pointText']."', '".$_REQUEST['pointLink']."', '".$_REQUEST['x']."','".$_REQUEST['y']."')");
         break;
     case 'buildClientsTable':
@@ -459,6 +469,28 @@ switch ($_REQUEST['action']) {
             //     echo $cityID;
             // }
             echo $_REQUEST['clientName'];
+        break;
+    case 'citiesList':
+        $query = "SELECT `city` FROM `cities` ORDER BY `city`";
+        $res = mysql_query($query);
+        echo "<select>";
+        while($row = mysql_fetch_array($res)) {
+            echo "<option value='".$row['city']."'>";
+            echo $row['city'];
+            echo "</option>";
+        }
+        echo "</select>";
+        break;
+    case 'clientsList':
+        $query = "SELECT `name` FROM `clients` ORDER BY `name`";
+        $res = mysql_query($query);
+        echo "<select>";
+        while($row = mysql_fetch_array($res)) {
+            echo "<option value='".$row['name']."'>";
+            echo $row['name'];
+            echo "</option>";
+        }
+        echo "</select>";
         break;
 }
 
