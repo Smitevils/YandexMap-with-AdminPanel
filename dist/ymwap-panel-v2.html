@@ -8,13 +8,28 @@
     <!-- Normalize css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
     <!-- My styles -->
-    <link rel="stylesheet" href="assets/css/main.min.css">
+    <link rel="stylesheet" href="css/main.css">
     <!-- font awesome -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <!-- roboto -->
     <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+    <!-- Yandex Map -->
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <!-- fancybox -->
+    <!-- <script type="text/javascript" src="assets/source/jquery.fancybox.pack.js"></script>
+    <link rel="stylesheet" type="text/css" media="all" href="assets/source/jquery.fancybox.css" /> -->
 </head>
 <body class="ymwap-admin">
+    <!--  -->
+    <div class="ymwap-admin__location-tool">
+        <iframe src="http://dimik.github.io/ymaps/examples/location-tool/" width="1200" height="840" align="left">
+            Ваш браузер не поддерживает плавающие фреймы!
+         </iframe>
+    </div>
+    <div class="ymwap-admin__show-location-tool" style="color: green;">
+        <i class="fa fa-globe"></i>
+    </div>
+    <!--  -->
     <div class="ymwap-admin__container">
         <h1>Панель администратора - YandexMap-with-AdminPanel</h1>
         <h2>Города</h2>
@@ -122,6 +137,14 @@
                 </th>
             </tr>
         </table>
+        <h2>Пример карты</h2>
+        <div class="ymwap-admin__example">
+            <select id="" class="" name="">
+
+            </select>
+            <button>Показать</button>
+            <div id="ymwap-admin__map" class="ymwap-admin__map"></div>
+        </div>
     </div>
     <script>
         /* admin panel v2 */
@@ -157,6 +180,17 @@
                     });
                 }
                 initTableClients();
+                //
+                function initSelectMap() {
+                    $.ajax({
+                        url: 'map.php?action=SelectMap',
+                        success: function(data) {
+                            //alert(data)
+                            $('.ymwap-admin__example select').append(data);
+                        }
+                    });
+                }
+                initSelectMap();
                 //
                 $(document).on('click', '.ymwap-admin__table__btn-event', function(event) {
                     if ($(this).find('i').hasClass('ymwap__edit') && $(this).parents('.ymwap-admin__table').hasClass('ymwap-admin__table__table-cities')) { // если кнопка = редактировать
@@ -541,6 +575,78 @@
                         // заканчиваем функцию
                         return;
                     }
+                });
+            });
+            var currentCity;
+            var targetCity;
+            var myMap;
+            function init(){ // функция инициализации карты
+                myMap = new ymaps.Map("ymwap-admin__map", {
+                    center: [currentCity.cordinates.x , currentCity.cordinates.y], // берем данные из
+                    zoom: currentCity.zoom
+                });
+
+                var myGeoObjects = []; // создаем переменную дя геообьектов
+
+                if (currentCity.markets) {
+                    //alert(currentCity.markets.length)
+                    for (var i = 0; i < currentCity.markets.length; i++) { //пробегаемся по массиву маркеров
+                        myGeoObjects[i] = new ymaps.GeoObject({ // добавляем в геобьекты маркеры
+                            geometry: {
+                              type: "Point",
+                              coordinates: [currentCity.markets[i].posX, currentCity.markets[i].posY] // берем данные из массива с порядковым номером
+                          },
+                          properties: {
+                              clusterCaption: currentCity.markets[i].hintContent, // берем данные из массива с порядковым номером
+                              balloonContentHeader: currentCity.markets[i].marketName, // берем данные из массива с порядковым номером
+                              balloonContentBody: currentCity.markets[i].marketText, // берем данные из массива с порядковым номером
+                              balloonContentFooter: currentCity.markets[i].marketLink, // берем данные из массива с порядковым номером
+                          }
+                        });
+                    }
+                } else {
+                    console.log("Маркеров на карте нет!");
+                }
+
+                var myClusterer = new ymaps.Clusterer(); // создаем кластер
+                myClusterer.add(myGeoObjects);  // кладем в кластер
+                myMap.geoObjects.add(myClusterer); // добавляем кластер в геообьекты карты
+            }
+            function initAdminMap(){
+                $.ajax({
+                    url: 'map.php?action=currentCity&targetCity='+targetCity,
+                    success: function(data) {
+                        currentCity = JSON.parse(data); // возвращеем JSON в обьект
+                        console.log(currentCity);
+                        ymaps.ready(init);
+                        //init();
+                    }
+                });
+            }
+            $(document).on('click', '.ymwap-admin__example button', function(event) {
+                event.preventDefault();
+                if (myMap != undefined) {
+                    myMap.destroy();
+                }
+                targetCity = $('.ymwap-admin__example select :selected').val();
+                initAdminMap();
+            });
+            $(document).ready(function() {
+            	// $(".various").fancybox({
+            	// 	maxWidth	: 1200,
+            	// 	maxHeight	: 800,
+            	// 	fitToView	: false,
+            	// 	width		: '70%',
+            	// 	height		: '70%',
+            	// 	autoSize	: false,
+            	// 	closeClick	: false,
+            	// 	openEffect	: 'none',
+            	// 	closeEffect	: 'none'
+            	// });
+                $(document).on('click', '.ymwap-admin__show-location-tool', function(event) {
+                    event.preventDefault();
+                    $('.ymwap-admin__location-tool').toggleClass('visible');
+                    $('body').toggleClass('black');
                 });
             });
         /* /admin panel v2 */
