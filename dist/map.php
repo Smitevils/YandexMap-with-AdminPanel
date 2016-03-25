@@ -49,15 +49,15 @@ return $json_str;
 }
 /* функия кодировки */
 
-// $host="localhost";
-// $user="root";
-// $password="";
-// $db="my_db";
-
 $host="localhost";
-$user="srv39201_maps";
-$password="trem45";
-$db="srv39201_maps";
+$user="root";
+$password="";
+$db="my_db";
+
+// $host="localhost";
+// $user="srv39201_maps";
+// $password="trem45";
+// $db="srv39201_maps";
 
 if(!mysql_connect("$host", "$user", "$password")) {
     exit(mysql_error());
